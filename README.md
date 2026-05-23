@@ -17,13 +17,13 @@ A Combined Log Format access log analyzer, written in two Ruby variants to demon
 
 ```bash
 # From the spinel project root, compile:
-./spinel spinel_nedim/log_analyzer.rb -o spinel_nedim/log_analyzer
+./spinel log_analyzer.rb -o spinel_nedim/log_analyzer
 
 # Run on a real log file:
-./spinel_nedim/log_analyzer /var/log/nginx/access.log
+./log_analyzer /var/log/nginx/access.log
 
 # Run with synthetic data (no file needed):
-./spinel_nedim/log_analyzer
+./log_analyzer
 ```
 
 ### CRuby (either version)
