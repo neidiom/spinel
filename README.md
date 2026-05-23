@@ -20,28 +20,28 @@ A Combined Log Format access log analyzer, written in four Ruby variants to demo
 
 ```bash
 # From the spinel project root, compile:
-./spinel spinel_nedim/log_analyzer.rb -o spinel_nedim/log_analyzer
-./spinel spinel_nedim/log_analyzer_improved.rb -o spinel_nedim/log_analyzer_improved
-./spinel spinel_nedim/log_analyzer_v3.rb -o spinel_nedim/log_analyzer_v3
+./spinel ./log_analyzer.rb -o spinel_nedim/log_analyzer
+./spinel ./log_analyzer_improved.rb -o spinel_nedim/log_analyzer_improved
+./spinel ./log_analyzer_v3.rb -o spinel_nedim/log_analyzer_v3
 
 # Run on a real log file:
-./spinel_nedim/log_analyzer /var/log/nginx/access.log
-./spinel_nedim/log_analyzer_improved /var/log/nginx/access.log
-./spinel_nedim/log_analyzer_v3 /var/log/nginx/access.log
+./log_analyzer /var/log/nginx/access.log
+./log_analyzer_improved /var/log/nginx/access.log
+./log_analyzer_v3 /var/log/nginx/access.log
 
 # Run with synthetic data (no file needed):
-./spinel_nedim/log_analyzer
-./spinel_nedim/log_analyzer_improved
-./spinel_nedim/log_analyzer_v3
+./log_analyzer
+./log_analyzer_improved
+./log_analyzer_v3
 ```
 
 ### CRuby (all versions)
 
 ```bash
-ruby spinel_nedim/log_analyzer.rb /var/log/nginx/access.log
-ruby spinel_nedim/log_analyzer_improved.rb /var/log/nginx/access.log
-ruby spinel_nedim/log_analyzer_v3.rb /var/log/nginx/access.log
-ruby spinel_nedim/log_analyzer_idiomatic.rb /var/log/nginx/access.log
+ruby ./log_analyzer.rb /var/log/nginx/access.log
+ruby ./log_analyzer_improved.rb /var/log/nginx/access.log
+ruby ./log_analyzer_v3.rb /var/log/nginx/access.log
+ruby ./log_analyzer_idiomatic.rb /var/log/nginx/access.log
 ```
 
 All Ruby files produce byte-identical output for the same input.
