@@ -1,6 +1,6 @@
 # Log Analyzer -- Spinel AOT Demo
 
-A Combined Log Format access log analyzer, written in three Ruby variants to demonstrate Spinel's AOT compilation and benchmark the results.
+A Combined Log Format access log analyzer, written in four Ruby variants to demonstrate Spinel's AOT compilation capabilities and benchmark the results.
 
 ## Files
 
@@ -22,14 +22,17 @@ A Combined Log Format access log analyzer, written in three Ruby variants to dem
 # From the spinel project root, compile:
 ./spinel spinel_nedim/log_analyzer.rb -o spinel_nedim/log_analyzer
 ./spinel spinel_nedim/log_analyzer_improved.rb -o spinel_nedim/log_analyzer_improved
+./spinel spinel_nedim/log_analyzer_v3.rb -o spinel_nedim/log_analyzer_v3
 
 # Run on a real log file:
 ./spinel_nedim/log_analyzer /var/log/nginx/access.log
 ./spinel_nedim/log_analyzer_improved /var/log/nginx/access.log
+./spinel_nedim/log_analyzer_v3 /var/log/nginx/access.log
 
 # Run with synthetic data (no file needed):
 ./spinel_nedim/log_analyzer
 ./spinel_nedim/log_analyzer_improved
+./spinel_nedim/log_analyzer_v3
 ```
 
 ### CRuby (all versions)
@@ -37,6 +40,7 @@ A Combined Log Format access log analyzer, written in three Ruby variants to dem
 ```bash
 ruby spinel_nedim/log_analyzer.rb /var/log/nginx/access.log
 ruby spinel_nedim/log_analyzer_improved.rb /var/log/nginx/access.log
+ruby spinel_nedim/log_analyzer_v3.rb /var/log/nginx/access.log
 ruby spinel_nedim/log_analyzer_idiomatic.rb /var/log/nginx/access.log
 ```
 
@@ -72,23 +76,26 @@ Same algorithm (while-loop subset): Spinel is **14.8x faster** than CRuby, **10.
 - Hourly traffic histogram (ASCII bars)
 - Top 10 requesting hosts
 
-## Why two versions
+## Version Evolution
 
-The while-loop version compiles through Spinel's type inference engine. The idiomatic version doesn't -- it uses features (regex, `Hash.new(0)`, polymorphic `sort_by`, nil returns) that Spinel's static type system can't resolve.
+Three Spinel-compatible versions demonstrate progressive improvement while maintaining AOT compilability:
+
+| Version | Performance | Code Quality | Characteristics |
+|---------|-------------|--------------|-----------------|
+| V1 (`log_analyzer.rb`) | 23ms | Baseline | C-style, single-char vars, inline logic |
+| V2 (`log_analyzer_improved.rb`) | 22ms | Good | Extracted helpers, descriptive names, guard clauses |
+| V3 (`log_analyzer_v3.rb`) | 37ms | Excellent | Constants, OO design, full encapsulation |
+
+**Trade-off:** V3 is ~60% slower than V2 but significantly more maintainable. Choose based on your needs:
+- **V1/V2**: Performance-critical code
+- **V3**: Long-term maintenance, team projects, library code
+
+See `DEEP_DIVE.md` for comprehensive comparison and Spinel compatibility guide.
+
+## Why Multiple Versions
+
+The while-loop versions compile through Spinel's type inference engine. The idiomatic version doesn't -- it uses features (regex, `Hash.new(0)`, polymorphic `sort_by`, nil returns) that Spinel's static type system can't resolve.
 
 In CRuby, the idiomatic version is 4.7x faster than the while-loop version because regex and builtins are implemented in C. After Spinel compilation, the while-loop version is 3.2x faster than the idiomatic version because the entire program -- including the character-by-character parsing -- compiles to native C with no interpreter overhead.
 
 The code that was slowest in the interpreter became fastest after compilation.
-
-## Improvements in `log_analyzer_improved.rb`
-
-The improved version maintains Spinel compatibility while adopting better Ruby practices:
-
-- **Extracted helper methods**: `increment_hash`, `format_hour_label`, `build_bar` reduce duplication
-- **Better naming**: `space_pos` instead of `sp`, `date_start` instead of `dstart`
-- **Logical grouping**: `parse_request` extracted as private method
-- **Structured reporting**: `print_section` consolidates repeated output patterns
-- **Clearer separation**: `classify_status`, `record_verb`, `record_url`, `record_hour`
-- **Consistent style**: All formatting methods in one place (`percent`, `format_bytes`, `format_hour_label`)
-
-These changes make the code more maintainable without sacrificing Spinel compilability or performance.
